@@ -368,9 +368,9 @@ void fn_upd_medico(){
         if(VLOPT == 1){
           fn_ingresar_medico(VLMedicos, DB_MEDICO);
           cout << "| << SE HAN GUARDADO LOS CAMBIOS >>\n\n";
-          VLMedicos.clear();
         }
       }
+      VLMedicos.clear();
     }
   } while (VLCodigo != 0);
 }
@@ -420,26 +420,117 @@ void fn_del_medico(){
           VLMedicos.erase(VLMedicos.begin() + VLPost);
           fn_ingresar_medico(VLMedicos, DB_MEDICO);
           cout << "| << SE HAN GUARDADO LOS CAMBIOS >>\n\n";
-          VLMedicos.clear();
         }
       }
-      
+      VLMedicos.clear();
     }
   }while(VLCodigo != 0);
-  
 }
 
 /* OPCIONES PARA PACIENTES */
 void fn_ing_pacientes(){
-
+  vector<Paciente> VLPacientes;
+  Paciente VTPaciente;
+  int VLOpcion, VLSiguiente, VLConteo =0;
+  cout << "*************************\n";
+  cout << "** INGRESO DE PACIENTE **\n";
+  cout << "*************************\n\n";
+  VLConteo = fn_abrir_archivo_paciente(VLPacientes);
+  do{
+    VLOpcion = 0;
+    VLSiguiente = 0;
+    cout << "-->> Nombre del Pacinete: ";
+    cin >> VTPaciente.nombre;
+    cout << "-->> Apellido del Paciente: ";
+    cin >> VTPaciente.apellido;
+    cout << "-->> Telefono del Paciente: ";
+    cin >> VTPaciente.telefono;
+    cout << "-->> Edad del Paciente: ";
+    cin >> VTPaciente.edad;
+    cout << "-->> Peso del Paciente: ";
+    cin >> VTPaciente.peso;
+    cout << ">> Desea Guardar los datos Ingresados [0 = SI / 1 = NO]: ";
+    cin >> VLOpcion;
+    if(VLOpcion == 0){
+      VLConteo++;
+      VTPaciente.codigo = VLConteo;
+      VLPacientes.push_back(VTPaciente);
+    }
+    cout << "--> Desea Agregar otro [0 = SI / 1 = NO]: ";
+    cin >> VLSiguiente;
+  }while(VLSiguiente != 1);
+  fn_ingresar_paciente(VLPacientes);
 }
 
 void fn_upd_pacientes(){
-
+  vector<Paciente> VLPaciente;
+  int VLCantidad, VLCodigo, VLOPT;
+  bool VLEncontrado;
+  cout << "*************************\n";
+  cout << "** INGRESO DE PACIENTE **\n";
+  cout << "*************************\n\n";
+  do  
+  {
+    VLCantidad = fn_abrir_archivo_paciente(VLPaciente);
+    VLEncontrado = false;
+    fn_ver_paciente(VLPaciente);
+    cout << "Ingrece 0 para regresar\n";
+    cout << ">> Ingrese Codigo a modificar: "; cin >> VLCodigo;
+    if(VLCodigo != 0){
+      for(Paciente &VTPaciente : VLPaciente){
+        if(VTPaciente.codigo == VLCodigo){
+          VLEncontrado = true;
+          cout << "| Ingrese Telefono: "; cin >> VTPaciente.telefono;
+          cout << "| Ingrese Edad: "; cin >> VTPaciente.edad;
+          cout << "| Ingrese Peso: "; cin >> VTPaciente.peso;
+        }
+      }
+      if(!VLEncontrado){
+        cout << " << [ERROR] CODIGO INGRESADO ["<<VLCodigo<<"] NO ENCONTRADO >>";
+      }else{
+        cout << "| Desa Guardar los Cambios [1 = SI / OTRO NUMERO = NO]: "; cin >> VLOPT;
+        if(VLOPT == 1){
+          fn_ingresar_paciente(VLPaciente);
+          cout << "| << SE HAN GUARDADO LOS CAMBIOS DE LOS PACIENTES >>\n\n";
+        }
+      }
+      VLPaciente.clear();
+    }
+  } while (VLCodigo != 0);
 }
 
 void fn_del_pacientes(){
-
+  vector<Paciente> VLPaciente;
+  int VLCantidad, VLCodigo, VLPost, VLOPT;
+  bool VLEncontrado;
+  do{
+    VLCantidad = fn_abrir_archivo_paciente(VLPaciente);
+    fn_ver_paciente(VLPaciente);
+    cout << "Ingrece 0 para regresar\n";
+    cout << ">> Ingrese Codigo a modificar: "; cin >> VLCodigo;
+    if(VLCodigo != 0){
+      VLPost = 0;
+      VLEncontrado = false;
+      for (Paciente VTPaciente : VLPaciente){
+        if(VTPaciente.codigo == VLCodigo){
+          VLEncontrado = true;
+          break;
+        }
+        VLPost++;
+      }
+      if(!VLEncontrado){
+        cout << "<< [ERROR] EL CONDIGO ["<<VLCodigo<<"] NO SE ENCONTRO >>";
+      }else{
+        cout << "| Desa Guardar los Cambios [1 = SI / OTRO NUMERO = NO]: "; cin >> VLOPT;
+        if(VLOPT == 1){
+          VLPaciente.erase(VLPaciente.begin() + VLPost);
+          fn_ingresar_paciente(VLPaciente);
+          cout << "| << SE HAN GUARDADO LOS CAMBIOS >>\n\n";
+        }
+      }
+      VLPaciente.clear();
+    }
+  }while(VLCodigo != 0);
 }
 
 /* OPCIONES PARA PACIENTES */
