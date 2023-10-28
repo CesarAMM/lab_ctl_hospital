@@ -285,6 +285,59 @@ void fn_ver_medicos(vector<Medico> VLMedicos){
     cout <<"|---------|--------------------------|-----------|------------|-------------------|\n";
 }
 
+void fn_ver_paciente(vector<Paciente> VLDatos){
+  cout <<"| Codigo  | Nombre Paciente          | Telefono  | Edad       | Peso      |\n";
+  cout <<"|---------|--------------------------|-----------|------------|-----------|\n";
+    for(Paciente VPaciente : VLDatos){
+      cout <<"| "<<VPaciente.codigo<<fn_espacios(to_string(VPaciente.codigo).length(), 8);
+      cout <<"| "<<VPaciente.nombre<<" "<<VPaciente.apellido<<fn_espacios(VPaciente.apellido.length() + VPaciente.nombre.length() +1 , 25);
+      cout <<"| "<<VPaciente.telefono<<fn_espacios(VPaciente.telefono.length(), 10);
+      cout <<"| "<<VPaciente.edad<<fn_espacios(to_string(VPaciente.edad).length(), 11);
+      cout <<"| "<<VPaciente.peso<<fn_espacios(to_string(VPaciente.peso).length(),10)<<"|\n";
+    }
+    cout <<"|---------|--------------------------|-----------|------------|-------------------|\n";
+}
+
+void fn_ver_cita(vector<Cita> VLDatos){
+  vector<Medico> VLMedicos;
+  vector<Paciente> VLPacientes;
+  string VTMedico, VTPaciente;
+  bool VBMedico, VBPaciente;
+  fn_abrir_archivo_medico(VLMedicos); // ir a traer a los medicos
+  fn_abrir_archivo_paciente(VLPacientes); // ir a traer a los pacientes
+  cout <<"| Codigo  | Nombre Paciente          | Nombre Medico            | Fecha Cita  | Dianostico\n";
+  cout <<"|---------|--------------------------|--------------------------|-------------|--------------------------------\n";
+    for(Cita VCita : VLDatos){
+      VBMedico = false; 
+      VBPaciente = false;
+      VTMedico = ""; 
+      VTPaciente = "";
+      for (Medico VLMedico: VLMedicos){
+        if(VLMedico.codigo == VCita.codigo_medico){
+          VTMedico = VLMedico.nombre + " "+ VLMedico.apellido;  
+          VBMedico =true;
+          break;
+        }
+      }
+      for (Paciente VLPaciente: VLPacientes){
+        if(VLPaciente.codigo == VCita.codigo_paciente){
+          VTPaciente = VLPaciente.nombre + " "+ VLPaciente.apellido;  
+          VBPaciente = true;
+          break;
+        }
+      }
+      
+      if(VBMedico && VBPaciente){
+        cout <<"| "<<VCita.codigo<<fn_espacios(to_string(VCita.codigo).length(), 8);
+        cout <<"| "<<VTPaciente<<fn_espacios(VTPaciente.length(), 25);
+        cout <<"| "<<VTMedico<<fn_espacios(VTMedico.length(), 25);
+        cout <<"| "<<VCita.fecha_cita<<fn_espacios(VCita.fecha_cita.length(), 12);
+        cout <<"| "<<VCita.dianostico<<"|\n";
+      }
+    }
+    cout <<"|---------|--------------------------|-----------|------------|-------------------|\n";
+}
+
 void fn_upd_medico(){
   vector<Medico> VLMedicos;
   int VLCantidad, VLCodigo, VLOPT;
@@ -326,6 +379,18 @@ void fn_sel_medico(){
   vector<Medico> VLMedicos;
   int VLCantidad = fn_abrir_archivo_medico(VLMedicos);
   fn_ver_medicos(VLMedicos);
+}
+
+void fn_sel_pacientes(){
+  vector<Paciente> VLPacientes;
+  int VLCantidad = fn_abrir_archivo_paciente(VLPacientes);
+  fn_ver_paciente(VLPacientes);
+}
+
+void fn_sel_cita(){
+  vector<Cita> VLCitas;
+  int VLCantidad = fn_abrir_archivo_cita(VLCitas);
+  fn_ver_cita(VLCitas);
 }
 
 void fn_del_medico(){
@@ -373,10 +438,6 @@ void fn_upd_pacientes(){
 
 }
 
-void fn_sel_pacientes(){
-
-}
-
 void fn_del_pacientes(){
 
 }
@@ -390,9 +451,6 @@ void fn_upd_cita(){
 
 }
 
-void fn_sel_cita(){
-
-}
 
 void fn_del_cita(){
 
