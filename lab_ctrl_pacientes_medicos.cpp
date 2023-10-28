@@ -2,9 +2,6 @@
 #include <iostream>
 #include <vector>
 #include <string>
-//#include <ctype.h>
-//#include <stdio.h> 
-//#include <stdlib.h>
 
 using namespace std;
 
@@ -401,7 +398,7 @@ void fn_del_medico(){
     VLCantidad = fn_abrir_archivo_medico(VLMedicos);
     fn_ver_medicos(VLMedicos);
     cout << "Ingrece 0 para regresar\n";
-    cout << ">> Ingrese Codigo a modificar: "; cin >> VLCodigo;
+    cout << ">> Ingrese Codigo de Medico: "; cin >> VLCodigo;
     if(VLCodigo != 0){
       VLPost = 0;
       VLEncontrado = false;
@@ -507,7 +504,7 @@ void fn_del_pacientes(){
     VLCantidad = fn_abrir_archivo_paciente(VLPaciente);
     fn_ver_paciente(VLPaciente);
     cout << "Ingrece 0 para regresar\n";
-    cout << ">> Ingrese Codigo a modificar: "; cin >> VLCodigo;
+    cout << ">> Ingrese Codigo de Paciente: "; cin >> VLCodigo;
     if(VLCodigo != 0){
       VLPost = 0;
       VLEncontrado = false;
@@ -535,16 +532,118 @@ void fn_del_pacientes(){
 
 /* OPCIONES PARA PACIENTES */
 void fn_ing_cita(){
-
+  vector<Cita> VLCitas;
+  vector<Paciente> VLPacientes;
+  vector<Medico> VLMedicos;
+  Cita VLCita;
+  int VLOpcion, VLSiguiente, VLConteo =0;
+  cout << "**********************\n";
+  cout << "** INGRESO DE CITAS **\n";
+  cout << "**********************\n\n";
+  VLConteo = fn_abrir_archivo_cita(VLCitas);
+  fn_abrir_archivo_medico(VLMedicos);
+  fn_abrir_archivo_paciente(VLPacientes);
+  do{
+    cout <<"| Codigo  | Nombre Medico            |\n";
+    cout <<"|---------|--------------------------|\n";
+    for(Medico VTMedico : VLMedicos){
+      cout <<"| "<<VTMedico.codigo<<fn_espacios(to_string(VTMedico.codigo).length(), 8);
+      cout <<"| "<<VTMedico.nombre<<" "<<VTMedico.apellido<<fn_espacios(VTMedico.apellido.length() + VTMedico.nombre.length() +1 , 25)<<"|\n";
+    }
+    cout <<"|---------|--------------------------|-----------|------------|-------------------|\n";
+    cout << "-->> Codigo de Medico: "; cin >> VLCita.codigo_medico;
+    cout <<"| Codigo  | Nombre Paciente          |\n";
+    cout <<"|---------|--------------------------|\n";
+    for(Paciente VPaciente : VLPacientes){
+      cout <<"| "<<VPaciente.codigo<<fn_espacios(to_string(VPaciente.codigo).length(), 8);
+      cout <<"| "<<VPaciente.nombre<<" "<<VPaciente.apellido<<fn_espacios(VPaciente.apellido.length() + VPaciente.nombre.length() +1 , 25)<<"|\n";
+    }
+    cout <<"|---------|--------------------------|-----------|------------|-------------------|\n";
+    cout << "-->> Codigo de Paciente: "; cin >> VLCita.codigo_paciente;
+    cout << "-->> Fecha de la Cita(dd/mm/aaaa): "; cin >> VLCita.fecha_cita;
+    VLCita.dianostico = "";
+    cout << ">> Desea Guardar los datos Ingresados [0 = SI / 1 = NO]: ";
+    cin >> VLOpcion;
+    if(VLOpcion == 0){
+      VLConteo++;
+      VLCita.codigo = VLConteo;
+      VLCitas.push_back(VLCita);
+    }
+    cout << "--> Desea Agregar otro [0 = SI / 1 = NO]: ";
+    cin >> VLSiguiente;
+  }while(VLSiguiente != 1);
+  fn_ingresar_cita(VLCitas);
 }
 
 void fn_upd_cita(){
-
+  vector<Cita> VLCitas;
+  int VLCantidad, VLCodigo, VLOPT;
+  bool VLEncontrado;
+  cout << "**********************\n";
+  cout << "** INGRESO DE CITAS **\n";
+  cout << "**********************\n\n";
+  do  
+  {
+    VLCantidad = fn_abrir_archivo_cita(VLCitas);
+    VLEncontrado = false;
+    fn_ver_cita(VLCitas);
+    cout << "Ingrece 0 para regresar\n";
+    cout << ">> Ingrese Codigo a modificar: "; cin >> VLCodigo;
+    if(VLCodigo != 0){
+      for(Cita &VTCita : VLCitas){
+        if(VTCita.codigo == VLCodigo){
+          VLEncontrado = true;
+          cout << "| Ingrese Diagnostico: "; 
+          getline(cin, VTCita.dianostico);
+        }
+      }
+      if(!VLEncontrado){
+        cout << " << [ERROR] CODIGO INGRESADO ["<<VLCodigo<<"] NO ENCONTRADO >>";
+      }else{
+        cout << "| Desa Guardar los Cambios [1 = SI / OTRO NUMERO = NO]: "; cin >> VLOPT;
+        if(VLOPT == 1){
+          fn_ingresar_cita(VLCitas);
+          cout << "| << SE HAN GUARDADO LOS CAMBIOS DE LOS PACIENTES >>\n\n";
+        }
+      }
+      VLCitas.clear();
+    }
+  } while (VLCodigo != 0);
 }
 
 
 void fn_del_cita(){
-
+  vector<Cita> VLCitas;
+  int VLCantidad, VLCodigo, VLPost, VLOPT;
+  bool VLEncontrado;
+  do{
+    VLCantidad = fn_abrir_archivo_cita(VLCitas);
+    fn_ver_cita(VLCitas);
+    cout << "Ingrece 0 para regresar\n";
+    cout << ">> Ingrese Codigo de Cita: "; cin >> VLCodigo;
+    if(VLCodigo != 0){
+      VLPost = 0;
+      VLEncontrado = false;
+      for (Cita VTCita : VLCitas){
+        if(VTCita.codigo == VLCodigo){
+          VLEncontrado = true;
+          break;
+        }
+        VLPost++;
+      }
+      if(!VLEncontrado){
+        cout << "<< [ERROR] EL CONDIGO ["<<VLCodigo<<"] NO SE ENCONTRO >>";
+      }else{
+        cout << "| Desa Guardar los Cambios [1 = SI / OTRO NUMERO = NO]: "; cin >> VLOPT;
+        if(VLOPT == 1){
+          VLCitas.erase(VLCitas.begin() + VLPost);
+          fn_ingresar_cita(VLCitas);
+          cout << "| << SE HAN GUARDADO LOS CAMBIOS >>\n\n";
+        }
+      }
+      VLCitas.clear();
+    }
+  }while(VLCodigo != 0);
 }
 
 void fn_opt_medicos(){
